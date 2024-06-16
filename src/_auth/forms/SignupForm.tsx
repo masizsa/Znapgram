@@ -13,9 +13,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { signupValidation } from "@/lib/validation";
 import Loader from "@/components/shared/Loader";
+import { Link } from "react-router-dom";
+import { createUserAccount } from "@/lib/appwrite/api";
+import { useToast } from "@/components/ui/use-toast";
 
 const SignupForm = () => {
+  const { toast } = useToast();
   const isLoading = false;
+
   const form = useForm<z.infer<typeof signupValidation>>({
     resolver: zodResolver(signupValidation),
     defaultValues: {
@@ -27,10 +32,16 @@ const SignupForm = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof signupValidation>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof signupValidation>) {
+    const newUser = await createUserAccount(values);
+
+    if (!newUser) {
+      return toast({
+        title: "Sign up failed please try again",
+      });
+    }
+
+    // const session = await signInAccount()
   }
 
   return (
@@ -43,7 +54,10 @@ const SignupForm = () => {
         <p className="text-light-3 small-medium md:base-regular mt-12">
           To use Znapgram enter your details
         </p>
-        <form  onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5 w-full mt-4">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-5 w-full mt-4"
+        >
           <FormField
             control={form.control}
             name="username"
@@ -99,11 +113,22 @@ const SignupForm = () => {
           <Button type="submit" className="shad-button_primary">
             {isLoading ? (
               <div className="flex-center gap-2">
-                <Loader/> Loading...
+                <Loader /> Loading...
               </div>
-            ) : "Sign up"}
+            ) : (
+              "Sign up"
+            )}
           </Button>
-          <p className="text-small-regular text-light-2 text-center mt-2"></p>
+          <p className="text-small-regular text-light-2 text-center mt-2">
+            Already have an account?
+            <Link
+              to="/sign-in"
+              className="text-primary-500 text-small-semibold ml-1"
+            >
+              {" "}
+              Log in
+            </Link>
+          </p>
         </form>
       </div>
     </Form>

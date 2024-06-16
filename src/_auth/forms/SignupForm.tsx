@@ -11,13 +11,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signupValidation } from "@/lib/validation";
+import { SignupValidation } from "@/lib/validation";
 import Loader from "@/components/shared/Loader";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import {
   useCreateUserAccount,
-  useSignInACcount,
+  useSignInAccount,
 } from "@/lib/react-query/queriesAndMutations";
 import { useUserContext } from "@/context/AuthContext";
 
@@ -26,12 +26,12 @@ const SignupForm = () => {
   const { mutateAsync: createUserAccount, isPending: isCreatingUser } =
     useCreateUserAccount();
   const { mutateAsync: signInAccount, isPending: isSigningIn } =
-    useSignInACcount();
+    useSignInAccount();
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   const navigate = useNavigate();
 
-  const form = useForm<z.infer<typeof signupValidation>>({
-    resolver: zodResolver(signupValidation),
+  const form = useForm<z.infer<typeof SignupValidation>>({
+    resolver: zodResolver(SignupValidation),
     defaultValues: {
       name: "",
       username: "",
@@ -41,7 +41,7 @@ const SignupForm = () => {
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof signupValidation>) {
+  async function onSubmit(values: z.infer<typeof SignupValidation>) {
     const newUser = await createUserAccount(values);
 
     if (!newUser) {
@@ -53,7 +53,7 @@ const SignupForm = () => {
     const session = await signInAccount({
       email: values.email,
       password: values.password,
-    });
+    });    
 
     if (!session) {
       return toast({
@@ -154,7 +154,6 @@ const SignupForm = () => {
               to="/sign-in"
               className="text-primary-500 text-small-semibold ml-1"
             >
-              {" "}
               Log in
             </Link>
           </p>

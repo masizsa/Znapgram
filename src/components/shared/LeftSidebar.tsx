@@ -41,24 +41,38 @@ const LeftSidebar = () => {
           {sidebarLinks.map((link: INavLink) => {
             const isActive = pathname == link.route;
             return (
-              <li className={`leftsidebar-link group ${isActive && 'bg-primary-500'}`} key={ link.label}>
-                <NavLink to={link.route} className="flex gap-4 items-center p-4">
-                    <img src={link.imgURL} alt={link.label} className={`group-hover:invert-white group-hover:invert-white ${isActive && 'invert-white'}`} />
-                    {link.label}
+              <li
+                className={`leftsidebar-link group ${
+                  isActive && "bg-primary-500"
+                }`}
+                key={link.label}
+              >
+                <NavLink
+                  to={link.route}
+                  className="flex gap-4 items-center p-4"
+                >
+                  <img
+                    src={link.imgURL}
+                    alt={link.label}
+                    className={`group-hover:invert-white group-hover:invert-white ${
+                      isActive && "invert-white"
+                    }`}
+                  />
+                  {link.label}
                 </NavLink>
               </li>
             );
           })}
         </ul>
       </div>
-        <Button
-            variant="ghost"
-            className="shad-button_ghost"
-            onClick={() => signOut()}
-          >
-            <img src="/assets/icons/logout.svg" alt="logout" />
-            <p className="small-medium lg:base-medoum">Log out</p>
-          </Button>
+      <Button
+        variant="ghost"
+        className="shad-button_ghost"
+        onClick={() => signOut()}
+      >
+        <img src="/assets/icons/logout.svg" alt="logout" />
+        <p className="small-medium lg:base-medoum">Log out</p>
+      </Button>
     </nav>
   );
 };

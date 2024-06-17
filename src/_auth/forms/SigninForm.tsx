@@ -30,6 +30,7 @@ const SigninForm = () => {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof SigninValidation>) {
+    // account.deleteSession('current')
     const session = await signInAccount({
       email: values.email,
       password: values.password,

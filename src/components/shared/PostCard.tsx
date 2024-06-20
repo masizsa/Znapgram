@@ -50,7 +50,7 @@ const PostCard = ({ post }: PostCardProps) => {
                 <img src={post.imageUrl || '/assets/icons/profile-placehodler.svg'} alt="post image" className='post-card_img '/>
             </Link>
 
-            {/* <PostStats post={post} userId={user.id}/> */}
+            <PostStats post={post} userId={user.id}/>
         </div>
     )
 }

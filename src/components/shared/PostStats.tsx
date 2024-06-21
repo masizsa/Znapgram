@@ -1,4 +1,3 @@
-import { useUserContext } from "@/context/AuthContext";
 import {
   useDeleteSavedPost,
   useGetCurrentUser,
@@ -8,6 +7,7 @@ import {
 import { checkIsLiked } from "@/lib/utils";
 import { Models } from "appwrite";
 import React, { useState, useEffect } from "react";
+import Loader from "./Loader";
 
 type PostStatsProps = {
   post: Models.Document;
@@ -20,10 +20,19 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
   const [isSaved, setIsSaved] = useState(false);
 
   const { mutateAsync: likePost } = useLikePost();
-  const { mutateAsync: savePost } = useSavePost();
-  const { mutateAsync: deleteSavedPost } = useDeleteSavedPost();
+  const { mutateAsync: savePost, isPending: isSavingPost } =useSavePost();
+  const { mutateAsync: deleteSavedPost, isPending: isDeletingSavedPost } =
+    useDeleteSavedPost();
 
   const { data: currentUser } = useGetCurrentUser();
+
+  const savedPostRecord = currentUser?.save.find(
+    (record: Models.Document) => record.post.$id === post.$id
+  );
+
+  useEffect(() => {
+    setIsSaved(!!savedPostRecord);
+  }, [currentUser]);
 
   const handleLikePost = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -44,10 +53,6 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
   const handleSavePost = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    const savedPostRecord = currentUser?.save.find(
-      (record: Models.Document) => record.$id === post.$id
-    );
-
     if (savedPostRecord) {
       setIsSaved(false);
       deleteSavedPost(savedPostRecord.$id);
@@ -57,6 +62,10 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     savePost({ postId: post.$id, userId });
     setIsSaved(true);
   };
+
+  console.log(currentUser);
+  console.log(savedPostRecord);
+  
 
   return (
     <div className="flex justify-between items-center z-20">
@@ -76,14 +85,18 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
         <p className="small-medium lg:base-medium">{likes.length}</p>
       </div>
       <div className="flex gap-2">
-        <img
-          src={isSaved ? "/assets/icons/saved.svg" : "/assets/icons/save.svg"}
-          alt="save"
-          width={20}
-          height={20}
-          onClick={handleSavePost}
-          className="cursor-pointer"
-        />
+        {isDeletingSavedPost || isSavingPost ? (
+          <Loader />
+        ) : (
+          <img
+            src={isSaved ? "/assets/icons/saved.svg" : "/assets/icons/save.svg"}
+            alt="save"
+            width={20}
+            height={20}
+            onClick={handleSavePost}
+            className="cursor-pointer"
+          />
+        )}
       </div>
     </div>
   );

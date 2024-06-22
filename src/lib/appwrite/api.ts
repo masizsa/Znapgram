@@ -1,7 +1,6 @@
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { ID, ImageGravity, Query } from "appwrite";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
-import { log } from "console";
 
 export async function createUserAccount(user: INewUser) {
   try {
@@ -23,7 +22,8 @@ export async function createUserAccount(user: INewUser) {
       imageUrl: avatarUrl,
       username: user.username,
     });
-    return newAccount;
+
+    return newUser;
   } catch (error) {
     console.log(error);
     return error;
@@ -168,7 +168,7 @@ export async function getFilePreview(fileId: string) {
 }
 export async function deleteFile(fileId: string) {
   try {
-    const deletedFile = await storage.deleteFile(
+    await storage.deleteFile(
       appwriteConfig.storageId,
       fileId
     );

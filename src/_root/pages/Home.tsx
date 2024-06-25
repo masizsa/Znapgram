@@ -1,3 +1,4 @@
+import AllUsers from "@/components/shared/AllUsers";
 import Loader from "@/components/shared/Loader";
 import PostCard from "@/components/shared/PostCard";
 import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
@@ -22,6 +23,7 @@ const Home = () => {
           )}
         </div>
       </div>
+      <AllUsers />
     </div>
   )
 }
